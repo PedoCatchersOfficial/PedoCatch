@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Submission Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Submission Portal</h1>
+        <p class="subtitle">Submit details, target links, and evidence notes safely.</p>
+        
+        <form id="reportForm">
+            <div class="form-group">
+                <label for="targetContact">Target / Contact Info (Username, URL, etc.)</label>
+                <input type="text" id="targetContact" required placeholder="e.g., Discord handle, profile link">
+            </div>
+
+            <div class="form-group">
+                <label for="details">Target Details / Description</label>
+                <textarea id="details" rows="4" required placeholder="Describe what is happening..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="evidence">IP / Evidence / Notes</label>
+                <textarea id="evidence" rows="3" placeholder="Paste any logs, links, or extra notes here..."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Submit Report</button>
+        </form>
+
+        <div id="statusMessage" class="hidden"></div>
+    </div>
+
+    <script>
+        const workerUrl = "https://pedocatcherrequest.duckybutt40.workers.dev/";
+
+        document.getElementById("reportForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById("submitBtn");
+            const statusMessage = document.getElementById("statusMessage");
+            
+            const payload = {
+                targetContact: document.getElementById("targetContact").value,
+                details: document.getElementById("details").value,
+                evidence: document.getElementById("evidence").value
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+            statusMessage.className = "hidden";
+
+            try {
+                const response = await fetch(workerUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    statusMessage.textContent = "Report successfully submitted!";
+                    statusMessage.className = "success";
+                    document.getElementById("reportForm").reset();
+                } else {
+                    throw new Error(result.error || "Failed to submit report.");
+                }
+            } catch (err) {
+                statusMessage.textContent = "Error: " + err.message;
+                statusMessage.className = "error";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Report";
+            }
+        });
+    </script>
+</body>
+</html>
