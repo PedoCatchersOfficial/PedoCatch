@@ -1,6 +1,3 @@
 name = "pedocatcherrequest"
 main = "worker.js"
 compatibility_date = "2026-07-25"
-
-[vars]
-# This tells Cloudflare to expose environment variables to your worker code
