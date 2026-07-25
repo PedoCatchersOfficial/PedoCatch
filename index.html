@@ -3,86 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Submission Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Secure Evidence & Incident Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <div class="ambient-glow"></div>
 
-    <div class="container">
-        <div class="header-badge">Encrypted Pipeline</div>
-        <h1>Secure Submission Portal</h1>
-        <p class="subtitle">Submit target links, contact identifiers, and evidence notes safely for review.</p>
-        
-        <form id="reportForm">
+    <div class="portal-wrapper">
+        <header class="portal-header">
+            <span class="secure-tag">Encrypted Endpoint</span>
+            <h1>Incident & Evidence Intake</h1>
+            <p>Securely submit target credentials and file evidence. All traffic is proxied anonymously.</p>
+        </header>
+
+        <form id="reportForm" novalidate>
             <div class="form-group">
-                <label for="targetContact">Target / Contact Info</label>
-                <input type="text" id="targetContact" required placeholder="e.g., Discord handle, profile URL">
+                <label for="targetContact">Target Contact / Identifier</label>
+                <input type="text" id="targetContact" required placeholder="Discord ID, Username, Email, or Phone Number">
             </div>
 
             <div class="form-group">
-                <label for="details">Target Details / Description</label>
-                <textarea id="details" rows="3" required placeholder="Describe what is happening..."></textarea>
+                <label for="details">Incident Summary / Description</label>
+                <textarea id="details" rows="4" required placeholder="Provide a chronological description of the behavior or incident..."></textarea>
             </div>
 
             <div class="form-group">
-                <label for="evidence">IP / Evidence / Notes</label>
-                <textarea id="evidence" rows="2" placeholder="Paste any logs, links, or extra notes here..."></textarea>
+                <label for="evidenceFiles">Evidence Upload (Screenshots, Logs, Files)</label>
+                <div class="file-drop-zone" id="dropZone">
+                    <input type="file" id="evidenceFiles" multiple accept="image/*,video/*,.txt,.log,.pdf" class="file-input">
+                    <div class="file-drop-text">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        <span>Click to browse or drag & drop files here</span>
+                        <small>Supports images, videos, documents, or logs (Max 10MB total)</small>
+                    </div>
+                </div>
+                <div id="fileListPreview" class="file-list-preview"></div>
             </div>
 
-            <button type="submit" id="submitBtn">Submit Report</button>
+            <button type="submit" id="submitBtn">
+                <span class="btn-text">Transmit Secure Report</span>
+                <span class="spinner hidden"></span>
+            </button>
         </form>
 
-        <div id="statusMessage" class="hidden"></div>
+        <div id="statusMessage" class="status-msg hidden"></div>
     </div>
 
-    <script>
-        const workerUrl = "https://pedocatcherrequest.duckybutt40.workers.dev/";
-
-        document.getElementById("reportForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById("submitBtn");
-            const statusMessage = document.getElementById("statusMessage");
-            
-            const payload = {
-                targetContact: document.getElementById("targetContact").value,
-                details: document.getElementById("details").value,
-                evidence: document.getElementById("evidence").value
-            };
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Encrypting & Dispatching...";
-            statusMessage.className = "hidden";
-
-            try {
-                const response = await fetch(workerUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    statusMessage.textContent = "✓ Report successfully dispatched to secure channels.";
-                    statusMessage.className = "status-box success";
-                    document.getElementById("reportForm").reset();
-                } else {
-                    throw new Error(result.error || "Failed to submit report.");
-                }
-            } catch (err) {
-                statusMessage.textContent = "✕ Error: " + err.message;
-                statusMessage.className = "status-box error";
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Submit Report";
-            }
-        });
-    </script>
+    <script src="index.js"></script>
 </body>
 </html>
