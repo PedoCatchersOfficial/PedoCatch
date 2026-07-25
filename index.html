@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Submission Portal</title>
+    <title>Secure Submission Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="bg-glow"></div>
+
     <div class="container">
+        <div class="header-badge">Encrypted Pipeline</div>
         <h1>Secure Submission Portal</h1>
-        <p class="subtitle">Submit details, target links, and evidence notes safely.</p>
+        <p class="subtitle">Submit target links, contact identifiers, and evidence notes safely for review.</p>
         
         <form id="reportForm">
             <div class="form-group">
-                <label for="targetContact">Target / Contact Info (Username, URL, etc.)</label>
-                <input type="text" id="targetContact" required placeholder="e.g., Discord handle, profile link">
+                <label for="targetContact">Target / Contact Info</label>
+                <input type="text" id="targetContact" required placeholder="e.g., Discord handle, profile URL">
             </div>
 
             <div class="form-group">
                 <label for="details">Target Details / Description</label>
-                <textarea id="details" rows="4" required placeholder="Describe what is happening..."></textarea>
+                <textarea id="details" rows="3" required placeholder="Describe what is happening..."></textarea>
             </div>
 
             <div class="form-group">
                 <label for="evidence">IP / Evidence / Notes</label>
-                <textarea id="evidence" rows="3" placeholder="Paste any logs, links, or extra notes here..."></textarea>
+                <textarea id="evidence" rows="2" placeholder="Paste any logs, links, or extra notes here..."></textarea>
             </div>
 
             <button type="submit" id="submitBtn">Submit Report</button>
@@ -49,7 +54,7 @@
             };
 
             submitBtn.disabled = true;
-            submitBtn.textContent = "Submitting...";
+            submitBtn.textContent = "Encrypting & Dispatching...";
             statusMessage.className = "hidden";
 
             try {
@@ -64,15 +69,15 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    statusMessage.textContent = "Report successfully submitted!";
-                    statusMessage.className = "success";
+                    statusMessage.textContent = "✓ Report successfully dispatched to secure channels.";
+                    statusMessage.className = "status-box success";
                     document.getElementById("reportForm").reset();
                 } else {
                     throw new Error(result.error || "Failed to submit report.");
                 }
             } catch (err) {
-                statusMessage.textContent = "Error: " + err.message;
-                statusMessage.className = "error";
+                statusMessage.textContent = "✕ Error: " + err.message;
+                statusMessage.className = "status-box error";
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Submit Report";
