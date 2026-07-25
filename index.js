@@ -8,26 +8,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const spinner = submitBtn.querySelector(".spinner");
     const btnText = submitBtn.querySelector(".btn-text");
     const statusMessage = document.getElementById("statusMessage");
+    const terminalFeed = document.getElementById("terminalFeed");
 
     let selectedFiles = [];
 
-    // Handle interactive file selection and previews
+    // Periodic live terminal log generator to make the site feel alive
+    const mockLogs = [
+        "[NET] Encrypted node heartbeat verified.",
+        "[SEC] Scanning payload buffer for integrity...",
+        "[SYS] Memory allocation stable at 14.2KB.",
+        "[NET] Proxy tunnel handshake acknowledged.",
+        "[SEC] Firewall policies nominal."
+    ];
+
+    setInterval(() => {
+        const randomLog = mockLogs[Math.floor(Math.random() * mockLogs.length)];
+        const p = document.createElement("p");
+        p.className = "log-entry";
+        p.textContent = randomLog;
+        terminalFeed.appendChild(p);
+        if (terminalFeed.children.length > 6) {
+            terminalFeed.removeChild(terminalFeed.firstChild);
+        }
+        terminalFeed.scrollTop = terminalFeed.scrollHeight;
+    }, 4500);
+
+    // File input handling
     fileInput.addEventListener("change", (e) => {
         const files = Array.from(e.target.files);
-        
         files.forEach(file => {
-            // Prevent duplicate file additions based on name & size
             if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
                 selectedFiles.push(file);
             }
         });
-
         renderFileList();
     });
 
     function renderFileList() {
         fileListPreview.innerHTML = "";
-        
         selectedFiles.forEach((file, index) => {
             const chip = document.createElement("div");
             chip.className = "file-chip";
@@ -42,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
             removeBtn.style.border = "none";
             removeBtn.style.color = "#ff6666";
             removeBtn.style.cursor = "pointer";
-            removeBtn.style.marginLeft = "10px";
             
             removeBtn.addEventListener("click", () => {
                 selectedFiles.splice(index, 1);
@@ -55,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Helper: Convert uploaded files to base64 for safe JSON transport over worker
+    // Convert files to base64
     async function convertFilesToBase64(files) {
-        const promises = files.map(file => {
+        return Promise.all(files.map(file => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => resolve({
@@ -69,11 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 reader.onerror = error => reject(error);
                 reader.readAsDataURL(file);
             });
-        });
-        return Promise.all(promises);
+        }));
     }
 
-    // Handle Form Submission & Heavy Lifting
+    // Form Submission
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -81,16 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const details = document.getElementById("details").value.trim();
 
         if (!targetContact || !details) {
-            showStatus("Please fill out all required fields.", "error");
+            showStatus("ERR: Required fields missing.", "error");
             return;
         }
 
-        // Lock UI & start loader
         setLoading(true);
         hideStatus();
 
         try {
-            // Heavy lifting: process files into base64 payloads
             const encodedFiles = await convertFilesToBase64(selectedFiles);
 
             const payload = {
@@ -101,24 +115,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const response = await fetch(WORKER_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showStatus("✓ Report securely transmitted to monitoring endpoints.", "success");
+                showStatus("SUCCESS: Payload safely dispatched to endpoint.", "success");
                 form.reset();
                 selectedFiles = [];
                 fileListPreview.innerHTML = "";
             } else {
-                throw new Error(result.error || "Server rejected submission.");
+                throw new Error(result.error || "Transmission rejected by node.");
             }
         } catch (err) {
-            showStatus("Transmission error: " + err.message, "error");
+            showStatus("ERR_DISPATCH: " + err.message, "error");
         } finally {
             setLoading(false);
         }
@@ -127,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function setLoading(isLoading) {
         submitBtn.disabled = isLoading;
         if (isLoading) {
-            btnText.textContent = "Processing & Transmitting...";
+            btnText.textContent = "Transmitting Packet...";
             spinner.classList.remove("hidden");
         } else {
-            btnText.textContent = "Transmit Secure Report";
+            btnText.textContent = "Execute Secure Transmission";
             spinner.classList.add("hidden");
         }
     }
