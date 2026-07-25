@@ -7,5 +7,7 @@ We are a collaborative investigative and development team focused on tracking, e
 2. **The Pipeline:** Our backend systems process and sanitize incoming data while keeping sensitive keys secure.
 3. **The Dispatch:** Verified reports are automatically routed to our monitoring channels for team action.
 
-## ⚠️ Disclaimer
-All operations are conducted strictly for reporting, logging, and assisting authorized channels. We adhere to responsible disclosure and platform terms of service.
+## ⚠️ Disclaimer & Legal Notice
+We are **not** law enforcement. We operate independently as an investigative collective, but we actively cooperate and share intelligence with official law enforcement agencies when the time comes to take formal action.
+
+All operations are conducted strictly for reporting, logging, and assisting authorized authorities. We adhere to responsible disclosure and platform terms of service.
