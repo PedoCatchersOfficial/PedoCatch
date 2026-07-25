@@ -39,10 +39,12 @@ export default {
           ]
         };
 
-        // Fallback directly to your webhook URL if env.WEBHOOK_URL is undefined
-        const targetWebhook = (env && env.WEBHOOK_URL) ? env.WEBHOOK_URL : "YOUR_DISCORD_WEBHOOK_URL";
+        // Ensure the secret exists before fetching
+        if (!env.WEBHOOK_URL) {
+          throw new Error("WEBHOOK_URL secret is not bound in Cloudflare.");
+        }
 
-        const webhookResponse = await fetch(targetWebhook, {
+        const webhookResponse = await fetch(env.WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(discordPayload)
