@@ -1,5 +1,6 @@
 export default {
   async fetch(request, env, ctx) {
+    // 1. Handle browser CORS preflight requests
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
@@ -10,10 +11,12 @@ export default {
       });
     }
 
+    // 2. Handle the POST submission from your dashboard
     if (request.method === "POST") {
       try {
         const body = await request.json();
         
+        // Parse attached evidence files if provided
         let evidenceList = "None provided";
         try {
           if (body.evidence && body.evidence !== "None provided") {
@@ -24,6 +27,7 @@ export default {
           evidenceList = "Attached files processed.";
         }
 
+        // Format a clean, detailed message for your Discord webhook
         const discordPayload = {
           embeds: [
             {
@@ -44,6 +48,7 @@ export default {
           throw new Error("WEBHOOK_URL secret is not bound in Cloudflare.");
         }
 
+        // Forward the payload to your webhook using the secure Cloudflare secret
         const webhookResponse = await fetch(env.WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -54,6 +59,7 @@ export default {
           throw new Error("Failed to dispatch to destination webhook endpoint.");
         }
 
+        // Return a successful response back to your website frontend
         return new Response(JSON.stringify({ success: true }), {
           headers: {
             "Content-Type": "application/json",
