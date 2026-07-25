@@ -3,52 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Evidence & Incident Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Cyber Intelligence & Intake Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div class="grid-background"></div>
     <div class="ambient-glow"></div>
 
-    <div class="portal-wrapper">
-        <header class="portal-header">
-            <span class="secure-tag">Encrypted Endpoint</span>
-            <h1>Incident & Evidence Intake</h1>
-            <p>Securely submit target credentials and file evidence. All traffic is proxied anonymously.</p>
+    <div class="dashboard-shell">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand-group">
+                <div class="status-indicator"></div>
+                <span class="brand-title">SYSTEM // INTEL-NET</span>
+            </div>
+            <div class="telemetry-pills">
+                <span class="pill">NODE: ACTIVE</span>
+                <span class="pill">ENCRYPTION: AES-256</span>
+            </div>
         </header>
 
-        <form id="reportForm" novalidate>
-            <div class="form-group">
-                <label for="targetContact">Target Contact / Identifier</label>
-                <input type="text" id="targetContact" required placeholder="Discord ID, Username, Email, or Phone Number">
-            </div>
-
-            <div class="form-group">
-                <label for="details">Incident Summary / Description</label>
-                <textarea id="details" rows="4" required placeholder="Provide a chronological description of the behavior or incident..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="evidenceFiles">Evidence Upload (Screenshots, Logs, Files)</label>
-                <div class="file-drop-zone" id="dropZone">
-                    <input type="file" id="evidenceFiles" multiple accept="image/*,video/*,.txt,.log,.pdf" class="file-input">
-                    <div class="file-drop-text">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                        <span>Click to browse or drag & drop files here</span>
-                        <small>Supports images, videos, documents, or logs (Max 10MB total)</small>
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Column: Live Intel & Stats -->
+            <section class="intel-column">
+                <div class="panel stats-panel">
+                    <h3>Operational Metrics</h3>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <span class="stat-value" id="activeNodes">14,290</span>
+                            <span class="stat-label">Active Proxies</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">99.9%</span>
+                            <span class="stat-label">Uptime Ratio</span>
+                        </div>
                     </div>
                 </div>
-                <div id="fileListPreview" class="file-list-preview"></div>
-            </div>
 
-            <button type="submit" id="submitBtn">
-                <span class="btn-text">Transmit Secure Report</span>
-                <span class="spinner hidden"></span>
-            </button>
-        </form>
+                <div class="panel terminal-panel">
+                    <h3>Live Telemetry Stream</h3>
+                    <div class="terminal-feed" id="terminalFeed">
+                        <p class="log-entry">[SYS] Initializing secure handshake...</p>
+                        <p class="log-entry">[NET] Zero-knowledge proxy routing established.</p>
+                        <p class="log-entry">[SEC] Listening for incoming payload transmissions...</p>
+                    </div>
+                </div>
+            </section>
 
-        <div id="statusMessage" class="status-msg hidden"></div>
+            <!-- Right Column: The Intake Form Wizard -->
+            <section class="form-column">
+                <div class="panel form-panel">
+                    <div class="panel-header">
+                        <h2>Secure Evidence Intake</h2>
+                        <p>Submit identity handles, logs, and media evidence anonymously.</p>
+                    </div>
+
+                    <form id="reportForm" novalidate>
+                        <div class="form-group">
+                            <label for="targetContact">Target Contact / Identifier</label>
+                            <input type="text" id="targetContact" required placeholder="Discord ID, Handle, Email, or Phone Number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="details">Incident Summary / Description</label>
+                            <textarea id="details" rows="4" required placeholder="Detail the chronological evidence, chat logs, or actions observed..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Evidence & Media Attachments</label>
+                            <div class="file-drop-zone" id="dropZone">
+                                <input type="file" id="evidenceFiles" multiple accept="image/*,video/*,.txt,.log,.pdf" class="file-input">
+                                <div class="file-drop-text">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span>Drop files here or click to browse</span>
+                                    <small>Images, videos, logs, or documents accepted</small>
+                                </div>
+                            </div>
+                            <div id="fileListPreview" class="file-list-preview"></div>
+                        </div>
+
+                        <button type="submit" id="submitBtn">
+                            <span class="btn-text">Execute Secure Transmission</span>
+                            <span class="spinner hidden"></span>
+                        </button>
+                    </form>
+
+                    <div id="statusMessage" class="status-msg hidden"></div>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script src="index.js"></script>
